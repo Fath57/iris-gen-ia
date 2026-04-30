@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform, Pressable, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, Text } from '@/components/atoms'
@@ -45,11 +45,13 @@ export default function OtpScreen() {
     router.back()
   }
 
-  if (!email) {
-    // Sécurité : si l'écran est ouvert sans email, retour login.
-    router.replace('/login')
-    return null
-  }
+  // Sécurité : navigation différée à useEffect pour éviter
+  // "Attempted to navigate before mounting the Root Layout".
+  useEffect(() => {
+    if (!email) router.replace('/login')
+  }, [email, router])
+
+  if (!email) return null
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.bg, flex: 1 }}>

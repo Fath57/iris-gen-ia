@@ -2,10 +2,10 @@
 // futur contrat API. Le code OTP est toujours "123456" en mock, et chaque
 // envoi log le code à la console (DEV-only).
 
-import type { RequestOptions } from './http'
+import type { RequestOptions } from './http-types'
 import type { Session, User } from '@/types/auth'
 import type { Conversation, FileAttachment, Message } from '@/types/conversation'
-import { ApiError } from './http'
+import { ApiError } from './http-types'
 
 const MOCK_OTP = '123456'
 const MOCK_LATENCY_MS = 350
