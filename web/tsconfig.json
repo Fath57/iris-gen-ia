@@ -21,7 +21,10 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Permettre de garder des fichiers JS pendant la migration */
-    "allowJs": true 
+    "allowJs": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
