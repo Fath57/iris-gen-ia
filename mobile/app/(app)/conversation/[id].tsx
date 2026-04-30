@@ -4,7 +4,8 @@
 
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { KeyboardAvoidingView, Platform, Pressable, View } from 'react-native'
+import { Pressable, View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Spinner, Text } from '@/components/atoms'
 import { ChatInputBar, FileCard } from '@/components/molecules'
@@ -35,10 +36,7 @@ export default function ConversationScreen() {
         onBack={() => router.back()}
       />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           {conversation.isLoading
             ? (

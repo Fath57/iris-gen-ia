@@ -1,6 +1,7 @@
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, Pressable, View } from 'react-native'
+import { Pressable, View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, Text } from '@/components/atoms'
 import { OtpInput } from '@/components/molecules'
@@ -52,10 +53,7 @@ export default function OtpScreen() {
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.bg, flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <View style={{ flex: 1, gap: theme.spacing['2xl'], justifyContent: 'center', padding: theme.spacing.xl }}>
           <View>
             <Text size="2xl" weight="bold">Code de vérification</Text>
