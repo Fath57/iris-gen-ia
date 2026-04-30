@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, View } from 'react-native'
+import { View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, Input, Text } from '@/components/atoms'
 import { useRequestOtp } from '@/features/auth/hooks'
@@ -32,10 +33,7 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.bg, flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <View style={{ flex: 1, gap: theme.spacing['2xl'], justifyContent: 'center', padding: theme.spacing.xl }}>
           <View>
             <Text size="3xl" weight="bold">Iris</Text>

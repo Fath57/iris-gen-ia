@@ -8,6 +8,16 @@ Versions suivent [SemVer](https://semver.org/lang/fr/). Tant que l'app n'a pas l
 
 ### Added
 
+- **Chat — feat/chat** :
+  - `src/features/conversation/api.ts` : `list`, `get`, `create`, `remove`, `attachDocument`, `listMessages`, `sendMessage`.
+  - `src/features/conversation/hooks.ts` : `useConversations`, `useConversation`, `useMessages`, `useCreateConversation`, `useDeleteConversation`, `useAttachDocument`, `useSendMessage` (avec optimistic insert + rollback). `conversationKeys` constants.
+  - `src/features/conversation/useDocumentPicker.ts` : wrap `expo-document-picker`, retourne `pick()` qui ouvre le picker système.
+  - Molecule `MessageBubble` : variante user (bulle alignée droite, surface elevated) et assistant (flush left, markdown rendu via `react-native-markdown-display` aligné sur le theme).
+  - Molecule `ChatInputBar` : multiline qui grandit (48–140px), bouton `+` attach à gauche, bouton `↑` send à droite (jaune actif → noir, gris inactif), `ActivityIndicator` pendant pending.
+  - Molecule `FileCard` : icône document + nom + taille humanisée FR (`o`, `Ko`, `Mo`, `Go`), variant `compact` pour les headers, prop optionnelle `onRemove`.
+  - Organism `MessageList` : `FlatList` avec auto-scroll bas via `onContentSizeChange`, slots `header` et `emptyState`.
+  - Écran `(app)/index.tsx` : empty state CTA "Joindre un document" → pick → lazy create conv → attach. Header burger ouvre `/history`. `ChatInputBar` désactivé tant que pas de doc.
+  - Écran `(app)/conversation/[id].tsx` : back-button + titre, MessageList + ChatInputBar, Spinner pendant load.
 - **Auth — feat/auth** :
   - `src/features/auth/api.ts` : `authApi.requestOtp`, `authApi.verifyOtp` typés.
   - `src/features/auth/hooks.ts` : `useRequestOtp`, `useVerifyOtp` (branche `setSession` en `onSuccess`), `useSignOut`.
