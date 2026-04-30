@@ -1,3 +1,3 @@
 // Sections fonctionnelles : MessageList, ConversationList, AuthForm,
 // FileUploadSheet. Ajoutées au fil des features.
-export {}
+export { MessageList } from './MessageList'
