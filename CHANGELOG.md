@@ -8,6 +8,11 @@ Versions suivent [SemVer](https://semver.org/lang/fr/). Tant que l'app n'a pas l
 
 ### Added
 
+- **Compte / Sign-out — feat/account** :
+  - Atome `Avatar` (initiale de l'email dans un cercle accentMuted, tailles sm/md/lg).
+  - Variante `danger` sur `Button` (texte rouge + bordure rouge).
+  - Écran `(app)/account.tsx` : avatar lg + email + date d'adhésion (mémoïsée), bouton "Se déconnecter" avec `Alert` de confirmation, branche `useSignOut` (clear secure-store → l'auth-gate redirige vers `/login`).
+  - Avatar tappable (size `sm`) dans le header de l'écran chat home (droite) et dans le header de l'historique (droite après le `+`), tap → `/account`.
 - **Historique — feat/history** :
   - `src/lib/format.ts` : `formatRelativeDate` (FR, sans dépendance `Intl.RelativeTimeFormat`).
   - Molecule `ConversationItem` : icône doc/chat, titre 1-line, preview du dernier message, date relative.
