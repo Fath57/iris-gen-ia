@@ -1,0 +1,15 @@
+services:
+  gen-ai:
+    build: .
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./app:/app/app
+      - gen-ai-data:/data
+    environment:
+      - MODEL_NAME=mistral
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  gen-ai-data:
