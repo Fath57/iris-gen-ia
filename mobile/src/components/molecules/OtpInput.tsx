@@ -1,9 +1,10 @@
-// Pattern OTP : un TextInput invisible capte la saisie (paste / SMS autofill iOS),
-// les `length` cases sont rendues en lecture seule en miroir de la valeur.
-// Bien plus fiable que N TextInputs concurrents (focus, paste cassé, etc).
+// Pattern OTP : un TextInput pleine zone (opacity 0) sous les cases
+// reçoit directement les taps via pointerEvents 'none' sur la rangée
+// affichée. Évite les problèmes de focus/keyboard d'un input 1x1
+// off-screen, et supporte paste / iOS SMS autofill.
 
 import { useRef, useState } from 'react'
-import { Pressable, TextInput, View } from 'react-native'
+import { TextInput, View } from 'react-native'
 import { Text } from '@/components/atoms'
 import { useTheme } from '@/theme/ThemeProvider'
 
@@ -15,6 +16,8 @@ interface Props {
   disabled?: boolean
   autoFocus?: boolean
 }
+
+const BOX_HEIGHT = 60
 
 export function OtpInput({
   length = 6,
@@ -37,8 +40,13 @@ export function OtpInput({
   }
 
   return (
-    <Pressable onPress={() => inputRef.current?.focus()} disabled={disabled}>
-      <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
+    <View style={{ position: 'relative' }}>
+      <View
+        // pointerEvents none : les taps passent à travers vers le TextInput
+        // qui couvre toute la zone et déclenche le clavier natif.
+        pointerEvents="none"
+        style={{ flexDirection: 'row', gap: theme.spacing.sm }}
+      >
         {digits.map((digit, i) => {
           const isCurrent = focused && i === value.length && value.length < length
           return (
@@ -52,7 +60,7 @@ export function OtpInput({
                 borderRadius: theme.radius.lg,
                 borderWidth: 1.5,
                 flex: 1,
-                height: 60,
+                height: BOX_HEIGHT,
                 justifyContent: 'center',
               }}
             >
@@ -75,12 +83,15 @@ export function OtpInput({
         onChangeText={handleChange}
         onFocus={() => setFocused(true)}
         style={{
-          height: 1,
-          opacity: 0,
+          backgroundColor: 'transparent',
+          color: 'transparent',
+          height: BOX_HEIGHT,
+          left: 0,
           position: 'absolute',
-          width: 1,
+          right: 0,
+          top: 0,
         }}
       />
-    </Pressable>
+    </View>
   )
 }
