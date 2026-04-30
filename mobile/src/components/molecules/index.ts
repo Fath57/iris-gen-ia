@@ -1,3 +1,3 @@
 // Combinaisons d'atomes : OtpInput, MessageBubble, FileCard,
 // ConversationItem, ChatInputBar. Ajoutées au fil des features.
-export {}
+export { OtpInput } from './OtpInput'
