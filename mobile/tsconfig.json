@@ -1,7 +1,6 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "noUncheckedIndexedAccess": true,
     "paths": {
       "@/*": ["./src/*"],
       "@app/*": ["./app/*"],
@@ -16,7 +15,8 @@
       "@theme/*": ["./src/theme/*"],
       "@types/*": ["./src/types/*"]
     },
-    "strict": true
+    "strict": true,
+    "noUncheckedIndexedAccess": true
   },
   "include": [
     "**/*.ts",
