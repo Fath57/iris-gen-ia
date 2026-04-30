@@ -64,13 +64,17 @@ export function useDeleteConversation() {
   })
 }
 
-export function useAttachDocument(conversationId: string | undefined) {
+// L'id est passé au mutate, pas au hook : permet la création paresseuse
+// de conversation (id pas encore connu à la création du hook).
+interface AttachVars {
+  id: string
+  input: AttachDocumentInput
+}
+
+export function useAttachDocument() {
   const qc = useQueryClient()
-  return useMutation<Conversation, Error, AttachDocumentInput>({
-    mutationFn: (input) => {
-      if (!conversationId) throw new Error('conversationId requis')
-      return conversationApi.attachDocument(conversationId, input)
-    },
+  return useMutation<Conversation, Error, AttachVars>({
+    mutationFn: ({ id, input }) => conversationApi.attachDocument(id, input),
     onSuccess: (updated) => {
       qc.setQueryData(conversationKeys.detail(updated.id), updated)
       qc.setQueryData<Conversation[]>(conversationKeys.list, (prev) => {
@@ -81,46 +85,45 @@ export function useAttachDocument(conversationId: string | undefined) {
   })
 }
 
+interface SendVars {
+  id: string
+  input: SendMessageInput
+}
+
 interface SendContext {
   previousMessages?: Message[]
   tempId: string
+  conversationId: string
 }
 
-export function useSendMessage(conversationId: string | undefined) {
+export function useSendMessage() {
   const qc = useQueryClient()
-  return useMutation<Message[], Error, SendMessageInput, SendContext>({
-    mutationFn: (input) => {
-      if (!conversationId) throw new Error('conversationId requis')
-      return conversationApi.sendMessage(conversationId, input)
-    },
-    onMutate: async (input) => {
-      if (!conversationId) return { tempId: '' }
-      await qc.cancelQueries({ queryKey: conversationKeys.messages(conversationId) })
-      const previousMessages = qc.getQueryData<Message[]>(conversationKeys.messages(conversationId))
+  return useMutation<Message[], Error, SendVars, SendContext>({
+    mutationFn: ({ id, input }) => conversationApi.sendMessage(id, input),
+    onMutate: async ({ id, input }) => {
+      await qc.cancelQueries({ queryKey: conversationKeys.messages(id) })
+      const previousMessages = qc.getQueryData<Message[]>(conversationKeys.messages(id))
       const tempId = `temp-${Date.now()}`
       const optimistic: Message = {
         id: tempId,
-        conversationId,
+        conversationId: id,
         role: 'user',
         content: input.content,
         status: 'sending',
         createdAt: new Date().toISOString(),
       }
       qc.setQueryData<Message[]>(
-        conversationKeys.messages(conversationId),
+        conversationKeys.messages(id),
         [...(previousMessages ?? []), optimistic],
       )
-      return { previousMessages, tempId }
+      return { previousMessages, tempId, conversationId: id }
     },
     onError: (_, __, ctx) => {
-      if (ctx && conversationId) {
-        qc.setQueryData(conversationKeys.messages(conversationId), ctx.previousMessages)
-      }
+      if (ctx) qc.setQueryData(conversationKeys.messages(ctx.conversationId), ctx.previousMessages)
     },
     onSuccess: (newMessages, _, ctx) => {
-      if (!conversationId) return
-      qc.setQueryData<Message[]>(conversationKeys.messages(conversationId), (prev) => {
-        const withoutTemp = (prev ?? []).filter(m => m.id !== ctx?.tempId)
+      qc.setQueryData<Message[]>(conversationKeys.messages(ctx.conversationId), (prev) => {
+        const withoutTemp = (prev ?? []).filter(m => m.id !== ctx.tempId)
         return [...withoutTemp, ...newMessages]
       })
       qc.invalidateQueries({ queryKey: conversationKeys.list })
