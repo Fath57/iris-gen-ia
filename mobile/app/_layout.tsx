@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Stack, useRouter, useSegments } from 'expo-router'
+import { Stack } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -8,6 +8,12 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { useAuthStore } from '@/stores/auth'
 import { ThemeProvider } from '@/theme/ThemeProvider'
 import 'react-native-reanimated'
+
+// Empêche le splash de disparaître tant qu'on n'a pas hydraté l'auth :
+// évite le flash sur l'écran login avant le redirect si user déjà loggué.
+SplashScreen.preventAutoHideAsync().catch(() => {
+  // Ignoré : preventAutoHideAsync peut throw si déjà appelé en hot-reload.
+})
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,28 +25,35 @@ const queryClient = new QueryClient({
   },
 })
 
-function AuthGate({ children }: { children: ReactNode }) {
+function RootNavigator() {
   const status = useAuthStore(s => s.status)
   const hydrate = useAuthStore(s => s.hydrate)
-  const segments = useSegments()
-  const router = useRouter()
 
   useEffect(() => {
     void hydrate()
   }, [hydrate])
 
   useEffect(() => {
-    if (status === 'idle' || status === 'loading') return
-    const inAuthGroup = segments[0] === '(auth)'
-    if (status === 'unauthenticated' && !inAuthGroup) {
-      router.replace('/login')
+    if (status === 'authenticated' || status === 'unauthenticated') {
+      SplashScreen.hideAsync().catch(() => {})
     }
-    else if (status === 'authenticated' && inAuthGroup) {
-      router.replace('/')
-    }
-  }, [status, segments, router])
+  }, [status])
 
-  return <>{children}</>
+  const isAuthenticated = status === 'authenticated'
+
+  // Stack.Protected gère le routing déclarativement : changer le guard
+  // déclenche la navigation côté router, sans appel impératif risquant
+  // de tirer avant mount.
+  return (
+    <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
+      <Stack.Protected guard={isAuthenticated}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!isAuthenticated}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+    </Stack>
+  )
 }
 
 export default function RootLayout() {
@@ -49,12 +62,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider mode="dark">
-            <AuthGate>
-              <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
-                <Stack.Screen name="(auth)" />
-                <Stack.Screen name="(app)" />
-              </Stack>
-            </AuthGate>
+            <RootNavigator />
             <StatusBar style="light" />
           </ThemeProvider>
         </QueryClientProvider>

@@ -1,27 +1,15 @@
 // Client HTTP unique pour l'app. En mode mock (env.useMock), redirige vers
 // mock-server. Sinon ofetch contre l'API réelle, avec auth header automatique.
 
+import type { RequestOptions } from './http-types'
 import { ofetch } from 'ofetch'
 import { env } from './env'
+import { ApiError } from './http-types'
 import { mockHandle } from './mock-server'
 import { secureStorage } from './storage'
 
-export class ApiError extends Error {
-  status: number
-  constructor(status: number, message: string) {
-    super(message)
-    this.status = status
-    this.name = 'ApiError'
-  }
-}
-
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
-
-export interface RequestOptions {
-  method?: HttpMethod
-  body?: unknown
-  query?: Record<string, string | number | boolean | undefined>
-}
+export { ApiError } from './http-types'
+export type { HttpMethod, RequestOptions } from './http-types'
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const token = await secureStorage.getToken()

@@ -8,6 +8,12 @@ Versions suivent [SemVer](https://semver.org/lang/fr/). Tant que l'app n'a pas l
 
 ### Added
 
+- **Auth — feat/auth** :
+  - `src/features/auth/api.ts` : `authApi.requestOtp`, `authApi.verifyOtp` typés.
+  - `src/features/auth/hooks.ts` : `useRequestOtp`, `useVerifyOtp` (branche `setSession` en `onSuccess`), `useSignOut`.
+  - `src/components/molecules/OtpInput.tsx` : 6 cases avec `TextInput` invisible (paste, iOS SMS autofill `oneTimeCode`/`sms-otp`), focus visuel sur la case courante.
+  - Écran `app/(auth)/login.tsx` : input email validé (regex non-redos), bouton désactivé si invalide, `useRequestOtp` puis navigation vers `/otp` avec email en param, `KeyboardAvoidingView` iOS.
+  - Écran `app/(auth)/otp.tsx` : `OtpInput` auto-submit quand 6 chiffres, bouton Vérifier fallback, gestion d'erreurs (`401` code invalide, `410` expiré), liens "Renvoyer" et "Modifier l'email", guard si param `email` manquant.
 - Init Expo SDK 54 (template default, expo-router 6, RN 0.81, React 19, TS 5.9).
 - Lint `@antfu/eslint-config` (flat) + plugin React + polyfill `Object.groupBy` pour Node 20.
 - TypeScript strict + `noUncheckedIndexedAccess` + path aliases (`@/`, `@atoms/`, `@molecules/`, `@organisms/`, `@templates/`, `@features/`, `@hooks/`, `@lib/`, `@stores/`, `@theme/`, `@types/`, `@app/`).
