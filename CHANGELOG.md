@@ -8,6 +8,11 @@ Versions suivent [SemVer](https://semver.org/lang/fr/). Tant que l'app n'a pas l
 
 ### Added
 
+- **Historique — feat/history** :
+  - `src/lib/format.ts` : `formatRelativeDate` (FR, sans dépendance `Intl.RelativeTimeFormat`).
+  - Molecule `ConversationItem` : icône doc/chat, titre 1-line, preview du dernier message, date relative.
+  - Organism `ConversationList` : `FlatList` + `ReanimatedSwipeable` (gesture-handler) qui révèle un bouton trash rouge au swipe gauche, `Alert.alert` de confirmation avant `useDeleteConversation`. Empty state slot.
+  - Écran `(app)/history.tsx` : header back + titre + `+` jaune (nouvelle conv via `router.replace('/')`), spinner pendant load, empty state avec CTA, tap item → `/conversation/[id]`.
 - **Chat — feat/chat** :
   - `src/features/conversation/api.ts` : `list`, `get`, `create`, `remove`, `attachDocument`, `listMessages`, `sendMessage`.
   - `src/features/conversation/hooks.ts` : `useConversations`, `useConversation`, `useMessages`, `useCreateConversation`, `useDeleteConversation`, `useAttachDocument`, `useSendMessage` (avec optimistic insert + rollback). `conversationKeys` constants.
