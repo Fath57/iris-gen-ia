@@ -1,0 +1,13 @@
+# Cache local RTK (analytics)
+.rtk/
+
+# Outils éditeurs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
