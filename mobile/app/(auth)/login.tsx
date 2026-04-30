@@ -36,8 +36,8 @@ export default function LoginScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
       >
-        <View style={{ flex: 1, justifyContent: 'space-between', padding: theme.spacing.xl }}>
-          <View style={{ marginTop: theme.spacing['3xl'] }}>
+        <View style={{ flex: 1, gap: theme.spacing['2xl'], justifyContent: 'center', padding: theme.spacing.xl }}>
+          <View>
             <Text size="3xl" weight="bold">Iris</Text>
             <Text color="secondary" size="lg" style={{ marginTop: theme.spacing.sm }}>
               Discutez avec vos documents.

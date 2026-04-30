@@ -56,8 +56,8 @@ export default function OtpScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
       >
-        <View style={{ flex: 1, justifyContent: 'space-between', padding: theme.spacing.xl }}>
-          <View style={{ marginTop: theme.spacing['3xl'] }}>
+        <View style={{ flex: 1, gap: theme.spacing['2xl'], justifyContent: 'center', padding: theme.spacing.xl }}>
+          <View>
             <Text size="2xl" weight="bold">Code de vérification</Text>
             <Text color="secondary" style={{ marginTop: theme.spacing.sm }}>
               Saisissez le code à 6 chiffres envoyé à
