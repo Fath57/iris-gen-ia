@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "gen-ai"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy<2.0.0",
+    "torch>=2.4.0",
+    "langchain",
+    "langchain-community",
+    "langchain-huggingface",
+    "langchain-ollama",
+    "pypdf",
+    "chromadb",
+    "sentence-transformers",
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
