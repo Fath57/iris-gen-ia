@@ -1,5 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router'
+import { useState } from 'react'
 import { KeyboardAvoidingView, Platform, Pressable, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, Text } from '@/components/atoms'
@@ -45,13 +45,10 @@ export default function OtpScreen() {
     router.back()
   }
 
-  // Sécurité : navigation différée à useEffect pour éviter
-  // "Attempted to navigate before mounting the Root Layout".
-  useEffect(() => {
-    if (!email) router.replace('/login')
-  }, [email, router])
-
-  if (!email) return null
+  // Garde déclarative : <Redirect /> programme la navigation via le
+  // navigator ready, contrairement à router.replace dans un effect
+  // qui peut fire avant le commit du root Stack.
+  if (!email) return <Redirect href="/login" />
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.bg, flex: 1 }}>
