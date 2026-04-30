@@ -44,6 +44,8 @@ module.exports = antfu(
       'react-refresh/only-export-components': 'off',
       // Les commentaires DOIVENT être en français — pas d'enforcement automatique possible.
       'antfu/if-newline': 'off',
+      // Expo expose process.env.EXPO_PUBLIC_* sans import explicite côté RN.
+      'node/prefer-global/process': 'off',
     },
   },
 )
