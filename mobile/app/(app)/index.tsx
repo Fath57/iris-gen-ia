@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { Pressable, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Button, Spinner, Text } from '@/components/atoms'
+import { Avatar, Button, Spinner, Text } from '@/components/atoms'
 import { ChatInputBar, FileCard } from '@/components/molecules'
 import { MessageList } from '@/components/organisms'
 import {
@@ -19,6 +19,7 @@ import {
   useSendMessage,
 } from '@/features/conversation/hooks'
 import { useDocumentPicker } from '@/features/conversation/useDocumentPicker'
+import { useAuthStore } from '@/stores/auth'
 import { useTheme } from '@/theme/ThemeProvider'
 
 export default function ChatHomeScreen() {
@@ -60,7 +61,10 @@ export default function ChatHomeScreen() {
 
   return (
     <SafeAreaView edges={['top']} style={{ backgroundColor: theme.colors.bg, flex: 1 }}>
-      <Header onOpenHistory={() => router.push('/history')} />
+      <Header
+        onOpenAccount={() => router.push('/account')}
+        onOpenHistory={() => router.push('/history')}
+      />
 
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -90,10 +94,12 @@ export default function ChatHomeScreen() {
 
 interface HeaderProps {
   onOpenHistory: () => void
+  onOpenAccount: () => void
 }
 
-function Header({ onOpenHistory }: HeaderProps) {
+function Header({ onOpenHistory, onOpenAccount }: HeaderProps) {
   const theme = useTheme()
+  const email = useAuthStore(s => s.user?.email ?? '?')
   return (
     <View
       style={{
@@ -121,7 +127,12 @@ function Header({ onOpenHistory }: HeaderProps) {
         <Ionicons name="menu" size={22} color={theme.colors.textPrimary} />
       </Pressable>
       <Text weight="semibold">Iris</Text>
-      <View style={{ width: 40 }} />
+      <Pressable
+        hitSlop={8}
+        onPress={onOpenAccount}
+      >
+        <Avatar email={email} size="sm" />
+      </Pressable>
     </View>
   )
 }

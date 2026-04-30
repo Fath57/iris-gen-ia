@@ -7,9 +7,10 @@ import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { Pressable, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Spinner, Text } from '@/components/atoms'
+import { Avatar, Spinner, Text } from '@/components/atoms'
 import { ConversationList } from '@/components/organisms'
 import { useConversations, useDeleteConversation } from '@/features/conversation/hooks'
+import { useAuthStore } from '@/stores/auth'
 import { useTheme } from '@/theme/ThemeProvider'
 
 export default function HistoryScreen() {
@@ -37,6 +38,7 @@ export default function HistoryScreen() {
       <Header
         onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
         onNew={handleNew}
+        onOpenAccount={() => router.push('/account')}
       />
 
       {isLoading
@@ -60,10 +62,12 @@ export default function HistoryScreen() {
 interface HeaderProps {
   onBack: () => void
   onNew: () => void
+  onOpenAccount: () => void
 }
 
-function Header({ onBack, onNew }: HeaderProps) {
+function Header({ onBack, onNew, onOpenAccount }: HeaderProps) {
   const theme = useTheme()
+  const email = useAuthStore(s => s.user?.email ?? '?')
   return (
     <View
       style={{
@@ -106,6 +110,10 @@ function Header({ onBack, onNew }: HeaderProps) {
         })}
       >
         <Ionicons name="add" size={24} color={theme.colors.accent} />
+      </Pressable>
+
+      <Pressable hitSlop={8} onPress={onOpenAccount}>
+        <Avatar email={email} size="sm" />
       </Pressable>
     </View>
   )
