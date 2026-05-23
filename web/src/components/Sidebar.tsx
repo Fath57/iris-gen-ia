@@ -1,43 +1,43 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, LogOut, Sparkles, FileText, Bot } from "lucide-react";
-import { Chat } from "@/lib/types";
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Plus, LogOut, FileText, Bot } from 'lucide-react'
+import { Chat } from '@/lib/types'
+import { useAuth } from '@/lib/auth-context'
 
 interface SidebarProps {
-  chats: Chat[];
-  activeChatId: string;
-  onSelectChat: (id: string) => void;
-  onNewChat: () => void;
-  // Optionnel : tu pourras ajouter onLogout: () => void;
+  chats: Chat[]
+  activeChatId: string
+  onSelectChat: (id: string) => void
+  onNewChat: () => void
 }
 
 interface ChatGroup {
-  label: string;
-  items: Chat[];
+  label: string
+  items: Chat[]
 }
 
 function groupChats(chats: Chat[]): ChatGroup[] {
-  const now = new Date();
-  const today: Chat[] = [];
-  const yesterday: Chat[] = [];
-  const older: Chat[] = [];
+  const now = new Date()
+  const today: Chat[] = []
+  const yesterday: Chat[] = []
+  const older: Chat[] = []
 
   for (const chat of chats) {
-    const diffDays =
-      (now.getTime() - new Date(chat.updatedAt).getTime()) / 86_400_000;
-    if (diffDays < 1) today.push(chat);
-    else if (diffDays < 2) yesterday.push(chat);
-    else older.push(chat);
+    const diffDays = (now.getTime() - new Date(chat.updatedAt).getTime()) / 86_400_000
+    if (diffDays < 1) today.push(chat)
+    else if (diffDays < 2) yesterday.push(chat)
+    else older.push(chat)
   }
 
   return [
     { label: "Aujourd'hui", items: today },
-    { label: "Hier", items: yesterday },
-    { label: "Plus ancien", items: older },
-  ];
+    { label: 'Hier', items: yesterday },
+    { label: 'Plus ancien', items: older },
+  ]
 }
 
 export function Sidebar({ chats, activeChatId, onSelectChat, onNewChat }: SidebarProps) {
-  const groups = groupChats(chats);
+  const groups = groupChats(chats)
+  const { user, logout } = useAuth()
 
   return (
     <aside className="flex flex-col w-64 shrink-0 h-full bg-[#111111] border-r border-white/[0.06]">
@@ -80,11 +80,14 @@ export function Sidebar({ chats, activeChatId, onSelectChat, onNewChat }: Sideba
                       onClick={() => onSelectChat(chat.id)}
                       className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13.5px] text-left transition-colors cursor-pointer ${
                         activeChatId === chat.id
-                          ? "bg-white/[0.08] text-white/90 font-medium"
-                          : "text-white/40 hover:bg-white/[0.04] hover:text-white/60"
+                          ? 'bg-white/[0.08] text-white/90 font-medium'
+                          : 'text-white/40 hover:bg-white/[0.04] hover:text-white/60'
                       }`}
                     >
-                      <FileText size={13} className={`shrink-0 ${chat.document ? "text-blue-400/60" : "opacity-40"}`} />
+                      <FileText
+                        size={13}
+                        className={`shrink-0 ${chat.document ? 'text-blue-400/60' : 'opacity-40'}`}
+                      />
                       <span className="truncate">{chat.title}</span>
                     </button>
                   ))}
@@ -95,34 +98,32 @@ export function Sidebar({ chats, activeChatId, onSelectChat, onNewChat }: Sideba
         </div>
       </ScrollArea>
 
-      {/* Profil - Amélioré avec le bouton déconnexion */}
+      {/* Profil */}
       <div className="p-2.5 border-t border-white/[0.05]">
         <div className="flex items-center gap-2.5 px-2.5 py-[9px] rounded-[10px] border border-white/[0.06] bg-[#161616] hover:border-white/[0.11] transition-colors">
-          
           <div className="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-[10px] font-semibold tracking-wide text-white shrink-0">
-            JD
+            {user?.name?.slice(0, 2).toUpperCase() ?? '??'}
           </div>
 
           <div className="flex flex-col gap-px items-start flex-1 min-w-0 overflow-hidden">
             <span className="text-[13px] font-medium text-white/90 truncate leading-[1.3]">
-              Jean Dupont
+              {user?.name ?? 'Unknown'}
             </span>
             <div className="flex items-center gap-1">
               <div className="w-[5px] h-[5px] rounded-full bg-violet-500/50 shrink-0" />
-              <span className="text-[10.5px] text-white/30 leading-none">
-                Plan gratuit
-              </span>
+              <span className="text-[10.5px] text-white/30 leading-none">Free plan</span>
             </div>
           </div>
 
           <button
+            onClick={logout}
             className="w-7 h-7 rounded-[7px] flex items-center justify-center text-white/25 hover:text-red-400 hover:bg-red-400/10 transition-all cursor-pointer shrink-0"
-            title="Se déconnecter"
+            title="Sign out"
           >
             <LogOut size={14} />
           </button>
         </div>
       </div>
     </aside>
-  );
+  )
 }
