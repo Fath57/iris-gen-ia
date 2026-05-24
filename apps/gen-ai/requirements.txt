@@ -10,3 +10,22 @@ sentence-transformers
 fastapi
 uvicorn
 python-multipart
+# database
+sqlalchemy[asyncio]
+asyncpg
+# auth
+python-jose[cryptography]
+bcrypt
+pydantic[email]
+pydantic-settings
+# mail
+fastapi-mail
+# file loaders
+docx2txt
+openpyxl
+openai-whisper
+# tests
+pytest
+pytest-asyncio
+httpx
+aiosqlite

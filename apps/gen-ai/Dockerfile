@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
     openssl \
+    ffmpeg \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,12 +24,25 @@ RUN pip install --upgrade pip setuptools wheel && \
 COPY app/ ./app/
 
 
+FROM builder AS test
+
+RUN pip install --no-cache-dir pytest pytest-asyncio httpx aiosqlite
+
+COPY tests/ ./tests/
+
+CMD ["pytest", "-v"]
+
+
 FROM python:3.11-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     CHROMA_PERSIST_DIR=/data/chroma_db \
     UPLOAD_DIR=/data/temp_uploads
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

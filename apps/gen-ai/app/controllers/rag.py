@@ -2,22 +2,12 @@ import os
 import shutil
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from pydantic import BaseModel
 
-from app.config import UPLOAD_DIR
-from app.core.rag_engine import RAGEngine
+from app.core.config import settings
+from app.schemas.rag import AskRequest
+from app.services.rag import rag_engine
 
-router = APIRouter()
-engine = RAGEngine()
-
-
-class AskRequest(BaseModel):
-    question: str
-
-
-@router.get("/health")
-def health():
-    return {"status": "ok"}
+router = APIRouter(prefix="/rag", tags=["rag"])
 
 
 @router.post("/upload")
@@ -25,14 +15,14 @@ async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Seuls les fichiers PDF sont acceptés.")
 
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    file_path = os.path.join(settings.UPLOAD_DIR, file.filename)
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     try:
-        count = engine.ingest(file_path)
+        count = rag_engine.ingest(file_path)
         return {"message": f"Fichier {file.filename} indexé avec succès ({count} chunks)."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -41,7 +31,7 @@ async def upload_file(file: UploadFile = File(...)):
 @router.post("/ask")
 async def ask_question(body: AskRequest):
     try:
-        response = engine.ask(body.question)
+        response = rag_engine.ask(body.question)
         return {"question": body.question, "reponse": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
