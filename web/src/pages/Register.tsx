@@ -1,74 +1,74 @@
 import { Link } from 'react-router-dom'
-import { useRegisterForm } from '@/lib/hooks/useRegisterForm'
+import { ArrowLeft } from 'lucide-react'
+import { useOtpFlow } from '@/lib/hooks/useOtpFlow'
 import { AuthLogo } from '@/components/auth/AuthLogo'
 import { AuthCard } from '@/components/auth/AuthCard'
 import { AuthInput } from '@/components/auth/AuthInput'
-import { PasswordInput } from '@/components/auth/PasswordInput'
+import { OtpInput } from '@/components/auth/OtpInput'
 import { AuthSubmitButton } from '@/components/auth/AuthSubmitButton'
 
 export default function RegisterPage() {
-  const { form, onSubmit, serverError } = useRegisterForm()
-  const {
-    register,
-    formState: { errors, isSubmitting },
-  } = form
+  const { step, pendingEmail, emailForm, otpForm, onRequestOtp, onVerifyOtp, goBack, serverError } =
+    useOtpFlow()
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-[#0d0d0d] font-sans px-4">
       <div className="w-full max-w-[400px]">
         <AuthLogo />
 
-        <AuthCard title="Create your account" description="Start analysing your documents with AI.">
-          <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
-            <AuthInput
-              label="Full name"
-              type="text"
-              placeholder="Jean Dupont"
-              autoComplete="name"
-              error={errors.name?.message}
-              {...register('name')}
-            />
-
-            <AuthInput
-              label="Email"
-              type="email"
-              placeholder="you@example.com"
-              autoComplete="email"
-              error={errors.email?.message}
-              {...register('email')}
-            />
-
-            <PasswordInput
-              label="Password"
-              id="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              error={errors.password?.message}
-              {...register('password')}
-            />
-
-            <PasswordInput
-              label="Confirm password"
-              id="confirmPassword"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              error={errors.confirmPassword?.message}
-              {...register('confirmPassword')}
-            />
-
-            {serverError && (
-              <p className="text-[12px] text-red-400/80 bg-red-500/5 border border-red-500/15 rounded-lg px-3 py-2">
-                {serverError}
-              </p>
-            )}
-
-            <AuthSubmitButton
-              isSubmitting={isSubmitting}
-              label="Create account"
-              loadingLabel="Creating account…"
-            />
-          </form>
-        </AuthCard>
+        {step === 'email' ? (
+          <AuthCard
+            title="Create your account"
+            description="Enter your email - your account will be created automatically."
+          >
+            <form onSubmit={onRequestOtp} noValidate className="flex flex-col gap-4">
+              <AuthInput
+                label="Email"
+                type="email"
+                placeholder="you@example.com"
+                autoComplete="email"
+                error={emailForm.formState.errors.email?.message}
+                {...emailForm.register('email')}
+              />
+              {serverError && (
+                <p className="text-[12px] text-red-400/80 bg-red-500/5 border border-red-500/15 rounded-lg px-3 py-2">
+                  {serverError}
+                </p>
+              )}
+              <AuthSubmitButton
+                isSubmitting={emailForm.formState.isSubmitting}
+                label="Get started"
+                loadingLabel="Sending code..."
+              />
+            </form>
+          </AuthCard>
+        ) : (
+          <AuthCard title="Almost there!" description={'Enter the code we sent to ' + pendingEmail}>
+            <form onSubmit={onVerifyOtp} noValidate className="flex flex-col gap-4">
+              <OtpInput
+                error={otpForm.formState.errors.code?.message}
+                {...otpForm.register('code')}
+              />
+              {serverError && (
+                <p className="text-[12px] text-red-400/80 bg-red-500/5 border border-red-500/15 rounded-lg px-3 py-2">
+                  {serverError}
+                </p>
+              )}
+              <AuthSubmitButton
+                isSubmitting={otpForm.formState.isSubmitting}
+                label="Create account"
+                loadingLabel="Creating..."
+              />
+              <button
+                type="button"
+                onClick={goBack}
+                className="flex items-center justify-center gap-1.5 text-[12.5px] text-white/30 hover:text-white/50 transition-colors"
+              >
+                <ArrowLeft size={12} /> Change email
+              </button>
+            </form>
+          </AuthCard>
+        )}
 
         <p className="mt-5 text-center text-[12.5px] text-white/25">
           Already have an account?{' '}

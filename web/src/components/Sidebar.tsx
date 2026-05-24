@@ -102,12 +102,12 @@ export function Sidebar({ chats, activeChatId, onSelectChat, onNewChat }: Sideba
       <div className="p-2.5 border-t border-white/[0.05]">
         <div className="flex items-center gap-2.5 px-2.5 py-[9px] rounded-[10px] border border-white/[0.06] bg-[#161616] hover:border-white/[0.11] transition-colors">
           <div className="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-[10px] font-semibold tracking-wide text-white shrink-0">
-            {user?.name?.slice(0, 2).toUpperCase() ?? '??'}
+            {user?.email?.slice(0, 2).toUpperCase() ?? '??'}
           </div>
 
           <div className="flex flex-col gap-px items-start flex-1 min-w-0 overflow-hidden">
             <span className="text-[13px] font-medium text-white/90 truncate leading-[1.3]">
-              {user?.name ?? 'Unknown'}
+              {user?.email ?? 'Unknown'}
             </span>
             <div className="flex items-center gap-1">
               <div className="w-[5px] h-[5px] rounded-full bg-violet-500/50 shrink-0" />
