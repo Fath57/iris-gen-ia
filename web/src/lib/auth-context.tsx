@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { apiFetch } from './api'
 import type { AuthState, User } from './types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface AuthContextValue extends AuthState {
-  login: (email: string, password: string) => Promise<void>
-  register: (name: string, email: string, password: string) => Promise<void>
+  requestOtp: (email: string) => Promise<void>
+  verifyOtp: (email: string, code: string) => Promise<void>
   logout: () => void
 }
 
@@ -13,7 +14,7 @@ interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-const STORAGE_KEY = 'auth_user'
+const TOKEN_KEY = 'auth_token'
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
@@ -24,52 +25,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading: true,
   })
 
-  // Rehydrate session from localStorage on mount
+  // Rehydrate session — verify stored token against /users/me
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const user: User = JSON.parse(raw)
-        setState({ user, isAuthenticated: true, isLoading: false })
-        return
-      }
-    } catch {
-      localStorage.removeItem(STORAGE_KEY)
+    const token = localStorage.getItem(TOKEN_KEY)
+    if (!token) {
+      setState((s) => ({ ...s, isLoading: false }))
+      return
     }
-    setState((s) => ({ ...s, isLoading: false }))
+    apiFetch<User>('/users/me', { token })
+      .then((user) => setState({ user, isAuthenticated: true, isLoading: false }))
+      .catch(() => {
+        localStorage.removeItem(TOKEN_KEY)
+        setState({ user: null, isAuthenticated: false, isLoading: false })
+      })
   }, [])
 
-  // Mock login — replace with real API call
-  const login = async (email: string, _password: string): Promise<void> => {
-    setState((s) => ({ ...s, isLoading: true }))
-    await new Promise((r) => setTimeout(r, 900))
-
-    const user: User = {
-      id: crypto.randomUUID(),
-      name: email.split('@')[0],
-      email,
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
-    setState({ user, isAuthenticated: true, isLoading: false })
+  // Step 1 — request OTP (creates account if first time)
+  const requestOtp = async (email: string): Promise<void> => {
+    await apiFetch('/auth/request-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    })
   }
 
-  // Mock register — replace with real API call
-  const register = async (name: string, email: string, _password: string): Promise<void> => {
-    setState((s) => ({ ...s, isLoading: true }))
-    await new Promise((r) => setTimeout(r, 900))
-
-    const user: User = { id: crypto.randomUUID(), name, email }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
+  // Step 2 — verify OTP → get token → fetch user profile
+  const verifyOtp = async (email: string, code: string): Promise<void> => {
+    const { access_token } = await apiFetch<{ access_token: string }>('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, code }),
+    })
+    localStorage.setItem(TOKEN_KEY, access_token)
+    const user = await apiFetch<User>('/users/me', { token: access_token })
     setState({ user, isAuthenticated: true, isLoading: false })
   }
 
   const logout = (): void => {
-    localStorage.removeItem(STORAGE_KEY)
+    localStorage.removeItem(TOKEN_KEY)
     setState({ user: null, isAuthenticated: false, isLoading: false })
   }
 
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout }}>
+    <AuthContext.Provider value={{ ...state, requestOtp, verifyOtp, logout }}>
       {children}
     </AuthContext.Provider>
   )
