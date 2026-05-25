@@ -2,6 +2,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+
 import './index.css'
 import App from './App'
 import Test from './pages/Test'
@@ -21,14 +22,6 @@ const router = createBrowserRouter([
   {
     path: '/auth',
     element: <OtpAuthPage />,
-  },
-  {
-    path: '/login',
-    element: <Navigate to="/auth" replace />,
-  },
-  {
-    path: '/register',
-    element: <Navigate to="/auth" replace />,
   },
   {
     path: '/test',
