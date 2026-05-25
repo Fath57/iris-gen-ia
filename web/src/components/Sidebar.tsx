@@ -29,7 +29,7 @@ function groupChats(chats: Chat[]): ChatGroup[] {
   }
 
   return [
-    { label: "Aujourd'hui", items: today },
+    { label: 'Aujourd\'hui', items: today },
     { label: 'Hier', items: yesterday },
     { label: 'Plus ancien', items: older },
   ]
@@ -107,18 +107,18 @@ export function Sidebar({ chats, activeChatId, onSelectChat, onNewChat }: Sideba
 
           <div className="flex flex-col gap-px items-start flex-1 min-w-0 overflow-hidden">
             <span className="text-[13px] font-medium text-white/90 truncate leading-[1.3]">
-              {user?.email ?? 'Unknown'}
+              {user?.email ?? 'Inconnu'}
             </span>
             <div className="flex items-center gap-1">
               <div className="w-[5px] h-[5px] rounded-full bg-violet-500/50 shrink-0" />
-              <span className="text-[10.5px] text-white/30 leading-none">Free plan</span>
+              <span className="text-[10.5px] text-white/30 leading-none">Plan gratuit</span>
             </div>
           </div>
 
           <button
             onClick={logout}
             className="w-7 h-7 rounded-[7px] flex items-center justify-center text-white/25 hover:text-red-400 hover:bg-red-400/10 transition-all cursor-pointer shrink-0"
-            title="Sign out"
+            title="Se déconnecter"
           >
             <LogOut size={14} />
           </button>

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { apiFetch } from './api'
+import { apiFetch, ApiError } from './api'
 import type { AuthState, User } from './types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -34,8 +34,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     apiFetch<User>('/users/me', { token })
       .then((user) => setState({ user, isAuthenticated: true, isLoading: false }))
-      .catch(() => {
-        localStorage.removeItem(TOKEN_KEY)
+      .catch((err) => {
+        // Only clear the stored token on explicit auth failures (401/403).
+        // Transient network errors or server errors should not log the user out.
+        if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
+          localStorage.removeItem(TOKEN_KEY)
+        }
         setState({ user: null, isAuthenticated: false, isLoading: false })
       })
   }, [])
@@ -54,8 +58,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: 'POST',
       body: JSON.stringify({ email, code }),
     })
-    localStorage.setItem(TOKEN_KEY, access_token)
+    // Only persist the token after the profile fetch succeeds to avoid
+    // leaving auth state inconsistent if /users/me fails.
     const user = await apiFetch<User>('/users/me', { token: access_token })
+    localStorage.setItem(TOKEN_KEY, access_token)
     setState({ user, isAuthenticated: true, isLoading: false })
   }
 

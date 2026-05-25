@@ -1,15 +1,14 @@
 import { z } from 'zod'
 
 export const otpRequestSchema = z.object({
-  email: z.email('Invalid email address'),
+  email: z.email('Adresse email invalide'),
 })
 
 export const otpVerifySchema = z.object({
   code: z
     .string()
-    .min(4, 'Code too short')
-    .max(10, 'Code too long')
-    .regex(/^\d+$/, 'Code must contain only digits'),
+    .length(6, 'Le code doit contenir exactement 6 chiffres')
+    .regex(/^\d+$/, 'Le code doit contenir uniquement des chiffres'),
 })
 
 export type OtpRequestFormData = z.infer<typeof otpRequestSchema>

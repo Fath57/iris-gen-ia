@@ -30,7 +30,7 @@ export function useOtpFlow() {
       setPendingEmail(email)
       setStep('otp')
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Could not send code. Try again.')
+      setServerError(err instanceof Error ? err.message : "Impossible d'envoyer le code. Veuillez réessayer.")
     }
   })
 
@@ -40,7 +40,7 @@ export function useOtpFlow() {
       await verifyOtp(pendingEmail, code)
       navigate('/', { replace: true })
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Invalid or expired code.')
+      setServerError(err instanceof Error ? err.message : 'Code invalide ou expiré.')
     }
   })
 
