@@ -1,24 +1,42 @@
-// src/main.tsx (ou main.jsx)
+// src/main.tsx
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+
 import './index.css'
 import App from './App'
 import Test from './pages/Test'
+import OtpAuthPage from './pages/OtpAuthPage'
+import { AuthProvider } from './lib/auth-context'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
 
 const router = createBrowserRouter([
   {
-    path: "/", 
-    element: <App />,
+    path: '/',
+    element: (
+      <ProtectedRoute>
+        <App />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: "/test",
+    path: '/auth',
+    element: <OtpAuthPage />,
+  },
+  {
+    path: '/test',
     element: <Test />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
   },
 ])
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 )
