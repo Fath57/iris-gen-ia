@@ -7,7 +7,7 @@ interface OtpInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'typ
 }
 
 export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(({ error, ...props }, ref) => (
-  <FormField label="Verification code" error={error} htmlFor="otp-code">
+  <FormField label="Code de vérification" error={error} htmlFor="otp-code">
     <Input
       ref={ref}
       id="otp-code"
@@ -15,7 +15,7 @@ export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(({ error, ..
       inputMode="numeric"
       autoComplete="one-time-code"
       maxLength={10}
-      placeholder="Enter the code sent to your email"
+      placeholder="Entrez le code reçu par email"
       hasError={!!error}
       className="tracking-[0.2em] text-center text-[15px]"
       {...props}
