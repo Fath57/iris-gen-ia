@@ -5,8 +5,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import './index.css'
 import App from './App'
 import Test from './pages/Test'
-import LoginPage from './pages/Login'
-import RegisterPage from './pages/Register'
+import OtpAuthPage from './pages/OtpAuthPage'
 import { AuthProvider } from './lib/auth-context'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 
@@ -20,12 +19,16 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: '/auth',
+    element: <OtpAuthPage />,
+  },
+  {
     path: '/login',
-    element: <LoginPage />,
+    element: <Navigate to="/auth" replace />,
   },
   {
     path: '/register',
-    element: <RegisterPage />,
+    element: <Navigate to="/auth" replace />,
   },
   {
     path: '/test',

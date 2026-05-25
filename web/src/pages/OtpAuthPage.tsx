@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useOtpFlow } from '@/lib/hooks/useOtpFlow'
 import { AuthLogo } from '@/components/auth/AuthLogo'
@@ -7,7 +6,7 @@ import { AuthInput } from '@/components/auth/AuthInput'
 import { OtpInput } from '@/components/auth/OtpInput'
 import { AuthSubmitButton } from '@/components/auth/AuthSubmitButton'
 
-export default function RegisterPage() {
+export default function OtpAuthPage() {
   const { step, pendingEmail, emailForm, otpForm, onRequestOtp, onVerifyOtp, goBack, serverError } =
     useOtpFlow()
 
@@ -18,8 +17,8 @@ export default function RegisterPage() {
 
         {step === 'email' ? (
           <AuthCard
-            title="Create your account"
-            description="Enter your email - your account will be created automatically."
+            title="Sign in / Sign up"
+            description="Enter your email to receive a one-time code."
           >
             <form onSubmit={onRequestOtp} noValidate className="flex flex-col gap-4">
               <AuthInput
@@ -37,13 +36,16 @@ export default function RegisterPage() {
               )}
               <AuthSubmitButton
                 isSubmitting={emailForm.formState.isSubmitting}
-                label="Get started"
-                loadingLabel="Sending code..."
+                label="Send code"
+                loadingLabel="Sending..."
               />
             </form>
           </AuthCard>
         ) : (
-          <AuthCard title="Almost there!" description={'Enter the code we sent to ' + pendingEmail}>
+          <AuthCard
+            title="Check your inbox"
+            description={'We sent a code to ' + pendingEmail}
+          >
             <form onSubmit={onVerifyOtp} noValidate className="flex flex-col gap-4">
               <OtpInput
                 error={otpForm.formState.errors.code?.message}
@@ -56,8 +58,8 @@ export default function RegisterPage() {
               )}
               <AuthSubmitButton
                 isSubmitting={otpForm.formState.isSubmitting}
-                label="Create account"
-                loadingLabel="Creating..."
+                label="Continue"
+                loadingLabel="Verifying..."
               />
               <button
                 type="button"
@@ -69,16 +71,6 @@ export default function RegisterPage() {
             </form>
           </AuthCard>
         )}
-
-        <p className="mt-5 text-center text-[12.5px] text-white/25">
-          Already have an account?{' '}
-          <Link
-            to="/login"
-            className="text-violet-400 hover:text-violet-300 transition-colors font-medium"
-          >
-            Sign in
-          </Link>
-        </p>
       </div>
     </div>
   )
