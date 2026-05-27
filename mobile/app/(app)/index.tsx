@@ -50,7 +50,7 @@ export default function ChatHomeScreen() {
     }
     attach.mutate({
       id,
-      input: { name: file.name, mimeType: file.mimeType, size: file.size },
+      input: { name: file.name, mimeType: file.mimeType, size: file.size, uri: file.uri },
     })
   }
 

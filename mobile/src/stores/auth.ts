@@ -33,7 +33,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
     try {
       // Le client HTTP lit le token depuis secureStorage, pas besoin de l'injecter.
-      const user = await request<User>('/me')
+      const raw = await request<{ id: number, email: string, created_at: string }>('/users/me')
+      const user: User = { id: String(raw.id), email: raw.email, createdAt: raw.created_at }
       set({ status: 'authenticated', token, user })
     }
     catch {

@@ -7,6 +7,7 @@ export interface FileAttachment {
   mimeType: string
   size: number
   uri?: string
+  chunksCount?: number
 }
 
 export interface Message {

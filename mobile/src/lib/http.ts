@@ -18,13 +18,16 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     return mockHandle<T>(path, options, token)
   }
 
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
+
   try {
     return await ofetch<T>(`${env.apiUrl}${path}`, {
       method: options.method ?? 'GET',
-      body: options.body as Record<string, unknown> | undefined,
+      body: options.body as Record<string, unknown> | FormData | undefined,
       query: options.query,
       headers: {
-        'Content-Type': 'application/json',
+        // ofetch infère le Content-Type multipart (avec boundary) pour FormData.
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     })

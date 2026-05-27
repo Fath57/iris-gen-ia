@@ -59,7 +59,9 @@ export function FileCard({ file, compact, onRemove }: Props) {
         >
           {file.name}
         </Text>
-        <Text color="muted" size="xs">{humanizeSize(file.size)}</Text>
+        <Text color="muted" size="xs">
+          {file.chunksCount !== undefined ? `${file.chunksCount} chunks` : humanizeSize(file.size)}
+        </Text>
       </View>
 
       {onRemove
