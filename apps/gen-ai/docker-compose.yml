@@ -1,4 +1,31 @@
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: genai
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d genai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+
   gen-ai:
     build: .
     ports:
@@ -6,10 +33,24 @@ services:
     volumes:
       - ./app:/app/app
       - gen-ai-data:/data
-    environment:
-      - MODEL_NAME=mistral
-      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  test:
+    build:
+      context: .
+      target: test
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+    profiles:
+      - test
 
 volumes:
   gen-ai-data:
+  pg-data:
+  pgadmin-data:

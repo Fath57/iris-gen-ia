@@ -19,7 +19,30 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "python-multipart",
+    "sqlalchemy[asyncio]",
+    "asyncpg",
+    "python-jose[cryptography]",
+    "bcrypt",
+    "pydantic[email]",
+    "pydantic-settings",
+    "fastapi-mail",
+    # file loaders
+    "docx2txt",
+    "openpyxl",
+    "openai-whisper",
 ]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-asyncio",
+    "httpx",
+    "aiosqlite",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
 where = ["."]
