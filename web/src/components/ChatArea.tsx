@@ -1,61 +1,65 @@
-import { useState, useEffect, useRef } from "react";
-import { Chat } from "@/lib/types";
-import { ChatMessage, TypingIndicator } from "./chat-message";
-import { InputBox } from "./input-box";
-import { EmptyState } from "./empty-state";
-import { FileDropzone } from "./file-dropzone";
-import { AnalysisLoader } from "./analysis-loader";
-import { FileText, MoreVertical } from "lucide-react";
+import { useState, useEffect, useRef } from 'react'
+import { Conversation } from '@/lib/types'
+import { ChatMessage, TypingIndicator } from './chat-message'
+import { InputBox } from './input-box'
+import { EmptyState } from './empty-state'
+import { FileDropzone } from './file-dropzone'
+import { AnalysisLoader } from './analysis-loader'
+import { FileText, MoreVertical } from 'lucide-react'
 
 interface ChatAreaProps {
-  chat: Chat | undefined;
-  onSendMessage: (chatId: string, content: string) => void;
-  onFileUpload: (chatId: string, file: File) => void;
-  isTyping: boolean;
-  isUploading: boolean;
+  conversation: Conversation | null
+  showDropzone: boolean
+  onSendMessage: (content: string) => void
+  onFileUpload: (file: File) => void
+  isTyping: boolean
+  isUploading: boolean
 }
 
-export function ChatArea({ chat, onSendMessage, onFileUpload, isTyping, isUploading }: ChatAreaProps) {
-  const [input, setInput] = useState<string>("");
-  const bottomRef = useRef<HTMLDivElement>(null);
+export function ChatArea({
+  conversation,
+  showDropzone,
+  onSendMessage,
+  onFileUpload,
+  isTyping,
+  isUploading,
+}: ChatAreaProps) {
+  const [input, setInput] = useState('')
+  const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chat?.messages, isTyping]);
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [conversation?.messages, isTyping])
 
   const handleSend = () => {
-    if (!input.trim() || !chat) return;
-    onSendMessage(chat.id, input.trim());
-    setInput("");
-  };
+    if (!input.trim() || !conversation) return
+    onSendMessage(input.trim())
+    setInput('')
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
     }
-  };
+  }
 
-  if (!chat) {
+  if (isUploading) return <AnalysisLoader />
+
+  if (!conversation && !showDropzone) {
     return (
       <div className="flex-1 flex items-center justify-center bg-[#0d0d0d] text-white/20 text-sm">
         Sélectionnez ou créez un document
       </div>
-    );
+    )
   }
 
-  // 1. État : En cours d'analyse
-  if (isUploading) return <AnalysisLoader />;
+  if (showDropzone) return <FileDropzone onFileUpload={onFileUpload} />
 
-  // 2. État : En attente de document
-  if (!chat.document) return <FileDropzone onFileUpload={(file) => onFileUpload(chat.id, file)} />;
+  const isEmpty = conversation!.messages.length === 0
 
-  const isEmpty = chat.messages.length === 0;
-
-  // 3. État : Document chargé (Chat interactif)
   return (
     <div className="flex-1 flex flex-col h-full bg-[#0d0d0d]">
-      {/* Bannière du document */}
       <div className="h-16 shrink-0 flex items-center justify-between px-6 border-b border-white/[0.05] bg-[#0d0d0d]/80 backdrop-blur-md sticky top-1 z-10">
         <div className="flex items-center gap-3 min-w-0">
           <div className="p-1.5 rounded-md bg-blue-500/10 border border-blue-500/20">
@@ -63,10 +67,12 @@ export function ChatArea({ chat, onSendMessage, onFileUpload, isTyping, isUpload
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-xs font-medium text-white/90 truncate">
-              {chat.document.name}
+              {conversation!.document?.filename ?? conversation!.title}
             </span>
             <span className="text-[11px] text-white/40">
-              {(chat.document.size / 1024 / 1024).toFixed(2)} MB • Analysé et prêt
+              {conversation!.document
+                ? `${conversation!.document.chunks_count} chunks · Analysé et prêt`
+                : 'En attente de document'}
             </span>
           </div>
         </div>
@@ -75,20 +81,15 @@ export function ChatArea({ chat, onSendMessage, onFileUpload, isTyping, isUpload
         </button>
       </div>
 
-      {/* Zone principale (Messages ou Suggestions) */}
       <div className="flex-1 overflow-y-auto">
         {isEmpty ? (
-          <EmptyState 
-            documentName={chat.document.name} 
-            onSuggestionClick={(text) => {
-              setInput(text);
-              // Optionnel: Décommenter pour envoyer directement
-              // onSendMessage(chat.id, text); 
-            }} 
+          <EmptyState
+            documentName={conversation!.document?.filename ?? conversation!.title}
+            onSuggestionClick={(text) => setInput(text)}
           />
         ) : (
           <div className="py-6 max-w-3xl mx-auto px-6 flex flex-col gap-6">
-            {chat.messages.map((msg) => (
+            {conversation!.messages.map((msg) => (
               <ChatMessage key={msg.id} message={msg} />
             ))}
             {isTyping && <TypingIndicator />}
@@ -97,7 +98,6 @@ export function ChatArea({ chat, onSendMessage, onFileUpload, isTyping, isUpload
         )}
       </div>
 
-      {/* Zone d'input */}
       <div className="border-t border-white/[0.05] px-6 pt-4 pb-5 bg-gradient-to-t from-[#0d0d0d] to-transparent">
         <div className="max-w-3xl mx-auto">
           <InputBox
@@ -113,5 +113,5 @@ export function ChatArea({ chat, onSendMessage, onFileUpload, isTyping, isUpload
         </div>
       </div>
     </div>
-  );
+  )
 }

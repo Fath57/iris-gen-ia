@@ -38,7 +38,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div
       className={cn(
-        "flex items-end gap-3 animate-msg-fade-in",
+        "flex items-end gap-3 w-full animate-msg-fade-in",
         isUser ? "flex-row-reverse" : "flex-row"
       )}
     >

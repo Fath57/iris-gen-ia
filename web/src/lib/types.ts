@@ -15,22 +15,23 @@ export interface AuthState {
 // ── Domain ────────────────────────────────────────────────────────────────────
 
 export interface DocumentInfo {
-  name: string
-  size: number
-  type: string
+  id: string
+  filename: string
+  chunks_count: number
+  uploaded_at: string
 }
 
 export interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
-  citations?: string[] // Pour afficher "[Page 3]" par exemple
+  created_at: string
 }
 
-export interface Chat {
+export interface Conversation {
   id: string
   title: string
-  updatedAt: Date
+  created_at: string
+  document: DocumentInfo | null
   messages: Message[]
-  document?: DocumentInfo // Si undefined, le chat est en attente d'un document
 }
