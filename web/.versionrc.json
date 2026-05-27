@@ -1,0 +1,17 @@
+{
+  "header": "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\n",
+  "types": [
+    { "type": "feat", "section": "New Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "perf", "section": "Performance Improvements" },
+    { "type": "refactor", "section": "Refactoring" },
+    { "type": "docs", "section": "Documentation" },
+    { "type": "build", "section": "Build" },
+    { "type": "ci", "section": "CI/CD" },
+    { "type": "chore", "hidden": true },
+    { "type": "style", "hidden": true },
+    { "type": "test", "hidden": true }
+  ],
+  "releaseCommitMessageFormat": "chore(release): v{{currentTag}}",
+  "tagPrefix": "v"
+}
