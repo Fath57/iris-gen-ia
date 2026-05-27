@@ -44,7 +44,7 @@ export function FileDropzone({ onFileUpload }: FileDropzoneProps) {
             </span>
           </h1>
           <p className="text-white/40">
-            Importez un PDF, Word ou TXT pour commencer l'analyse.
+            Importez un document, audio ou vidéo pour commencer l'analyse.
           </p>
         </div>
 
@@ -66,14 +66,14 @@ export function FileDropzone({ onFileUpload }: FileDropzoneProps) {
             <p className="mb-2 text-sm text-white/60">
               <span className="font-semibold text-violet-400">Cliquez pour importer</span> ou glissez-déposez
             </p>
-            <p className="text-xs text-white/30">PDF, DOCX, TXT (Max 50MB)</p>
+            <p className="text-xs text-white/30">PDF, DOCX, XLSX · MP3, WAV, M4A, OGG, FLAC · MP4, AVI, MOV, MKV, WEBM</p>
           </div>
           <input
             ref={inputRef}
             type="file"
             className="hidden"
             onChange={handleFileInput}
-            accept=".pdf,.doc,.docx,.txt"
+            accept=".pdf,.doc,.docx,.xlsx,.xls,.mp3,.wav,.m4a,.ogg,.flac,.mp4,.avi,.mov,.mkv,.webm"
           />
         </div>
       </div>
