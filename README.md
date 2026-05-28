@@ -1,6 +1,6 @@
 ## Membres de l'équipe & leurs contributions
 
-### 👨‍💻 Arafath ATTA YAYA (`Fath57`) — Tech Lead / Mobile Lead
+### 👨‍💻 Arafath ATTA YAYA (`Fath57`) - Tech Lead / Mobile Lead
 
 **Branches :** `feat/foundation`, `feat/auth`, `feat/chat`, `feat/history`, `feat/account`, `feat/integration`, `main`
 
@@ -16,7 +16,7 @@
 
 ---
 
-### 👨‍💻 Soulé Soumaré (`sourtoumo`) — Frontend Web Lead
+### 👨‍💻 Soulé Soumaré (`sourtoumo`) - Frontend Web Lead
 
 **Branches :** `feat/web-auth`, `develop/web`
 
@@ -29,7 +29,7 @@
 
 ---
 
-### 👨‍💻 Patrick AMOUSSOU — Backend & Intégration Web/Backend
+### 👨‍💻 Patrick AMOUSSOU - Backend & Intégration Web/Backend
 
 **Branches :** gen-ai, `develop/web-review`, `feat/process-gen-ai`
 
@@ -43,7 +43,7 @@
 
 ---
 
-### 👨‍💻 Yanis Bouzidi (`Yanis-Bouzidi`) — Frontend Web / UI
+### 👨‍💻 Yanis Bouzidi (`Yanis-Bouzidi`) - Frontend Web / UI
 
 **Branches :** `develop/web`, `feat/web-chat-interface`
 
@@ -56,15 +56,7 @@
 
 ---
 
-### 🤖 Copilot SWE Agent — Revue automatisée
-
-**Branche :** `feat/web-auth`
-
-Un seul commit automatique pour adresser les retours de code review de la PR #8.
-
----
-
-### 👨‍💻 Sodjinnin — Mainteneur / Merge Master
+### 👨‍💻 Sodjinnin - Mainteneur / Merge Master
 
 **Rôle :** Gestion des merges de PR sur `main` (PR #9, PR #10)
 
@@ -74,14 +66,14 @@ Un seul commit automatique pour adresser les retours de code review de la PR #8.
 
 ```
 main
-├── feat/foundation      → Arafath  (mobile base)
-├── feat/auth            → Arafath  (mobile auth)
-├── feat/chat            → Arafath  (mobile chat)
-├── feat/history         → Arafath  (mobile historique)
-├── feat/account         → Arafath  (mobile compte + intégration API)
-├── gen-ai               → Patrick  (backend FastAPI)
-├── feat/process-gen-ai  → Patrick  (backend RAG/chat)
-├── develop/web          → Soulé + Yanis (web init + chat UI)
-├── feat/web-auth        → Soulé   (web auth OTP)
-└── develop/web-review   → Patrick (web ↔ backend integration)
+├── feat/foundation
+├── feat/auth
+├── feat/chat
+├── feat/history
+├── feat/account
+├── gen-ai  
+├── feat/process-gen-ai
+├── develop/web        
+├── feat/web-auth  
+└── develop/web-review 
 ```

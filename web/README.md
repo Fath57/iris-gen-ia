@@ -1,4 +1,4 @@
-# Iris Gen IA — Web
+# Iris Gen IA - Web
 
 Interface utilisateur de la plateforme **Iris Gen IA**, une application RAG (Retrieval-Augmented Generation) permettant d'importer des documents et d'interagir avec un assistant IA basé sur leur contenu.
 
@@ -6,12 +6,12 @@ Interface utilisateur de la plateforme **Iris Gen IA**, une application RAG (Ret
 
 ## Fonctionnalités
 
-- **Authentification OTP** (passwordless) — connexion par email + code à usage unique
-- **Gestion des conversations** — créer, lister, supprimer des conversations
-- **Upload de documents** — PDF, Word, Excel, audio, vidéo associés à une conversation
-- **Chat IA** — poser des questions sur les documents indexés, réponses en Markdown formaté
-- **Design dark** — thème sombre, accent violet, police Figtree
-- **Responsive** — layout adapté mobile et desktop
+- **Authentification OTP** (passwordless) - connexion par email + code à usage unique
+- **Gestion des conversations** - créer, lister, supprimer des conversations
+- **Upload de documents** - PDF
+- **Chat IA** - poser des questions sur les documents indexés, réponses en Markdown formaté
+- **Design dark** - thème sombre, accent violet, police Figtree
+- **Responsive** - layout adapté mobile et desktop
 
 ---
 
