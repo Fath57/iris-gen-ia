@@ -51,3 +51,4 @@ apps/gen-ai/files/
 *.log
 npm-debug.log*
 yarn-error.log*
+.claude/
