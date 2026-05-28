@@ -6,16 +6,17 @@ import type { ReactNode } from 'react'
 import type { Message } from '@/types/conversation'
 import { useRef } from 'react'
 import { FlatList, View } from 'react-native'
-import { MessageBubble } from '@/components/molecules'
+import { MessageBubble, TypingIndicator } from '@/components/molecules'
 import { useTheme } from '@/theme/ThemeProvider'
 
 interface Props {
   messages: Message[]
   header?: ReactNode
   emptyState?: ReactNode
+  loading?: boolean
 }
 
-export function MessageList({ messages, header, emptyState }: Props) {
+export function MessageList({ messages, header, emptyState, loading }: Props) {
   const theme = useTheme()
   const ref = useRef<FlatList<Message>>(null)
 
@@ -40,8 +41,9 @@ export function MessageList({ messages, header, emptyState }: Props) {
           ? <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', paddingHorizontal: theme.spacing.xl }}>{emptyState}</View>
           : null
       }
+      ListFooterComponent={loading ? <TypingIndicator /> : null}
       onContentSizeChange={() => {
-        if (messages.length > 0) ref.current?.scrollToEnd({ animated: true })
+        if (messages.length > 0 || loading) ref.current?.scrollToEnd({ animated: true })
       }}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}

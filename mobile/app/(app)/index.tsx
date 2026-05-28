@@ -71,6 +71,7 @@ export default function ChatHomeScreen() {
           <MessageList
             messages={messages.data ?? []}
             header={hasDocument && document ? <FileCard compact file={document} /> : null}
+            loading={send.isPending}
             emptyState={
               hasDocument
                 ? <EmptyHasDocument />
